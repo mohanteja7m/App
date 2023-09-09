@@ -145,6 +145,9 @@ for ind in range(num_ports):
 max_sr_ret = ret_arr[sharpe_arr.argmax()]
 max_sr_vol = vol_arr[sharpe_arr.argmax()]
 
+min_var_ret = ret_arr[vol_arr.argmin()]
+min_var_vol = vol_arr.min()
+
 # Plot Efficient Frontier
 st.subheader('Efficient Frontier')
 plt.figure(figsize=(10, 5))
@@ -154,6 +157,7 @@ plt.xlabel('Volatility')
 plt.ylabel('Return')
 plt.title('Efficient Frontier')
 plt.scatter(max_sr_vol, max_sr_ret, c='red', s=50, edgecolors='black', label='Maximum Sharpe Ratio')
+plt.scatter(min_var_vol, min_var_ret, c='green', s=50, edgecolors='black', label='Minimum Variance')
 plt.legend()
 st.pyplot()
 
