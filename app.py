@@ -110,12 +110,12 @@ mean_log_returns = Markowitz_log_ret.mean().values
 # Calculate expected return (weighted sum of mean returns)
 Markowitz_exp_ret = mean_log_returns.dot(weights_array) * 252
 st.subheader(f'\nExpected return of the portfolio is : {Markowitz_exp_ret}')
-
 # Calculate expected volatility (risk)
 Markowitz_exp_vol = np.sqrt(weights_array.T.dot(252 * Markowitz_log_ret.cov().dot(weights_array)))
-
+st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
+st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
 
 # Efficient Frontier Calculation
 num_ports = 5000
