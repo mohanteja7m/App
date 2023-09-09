@@ -6,14 +6,32 @@ import seaborn as sns
 import yfinance as yf
 from scipy.optimize import minimize
 
-# Download stock data using yfinance
-def download_stock_data():
-    AMZN = yf.download("AMZN", start="2012-05-18", end="2023-01-01", group_by="ticker")
-    MSFT = yf.download("MSFT", start="2012-05-18", end="2023-01-01", group_by="ticker")
-    NFLX = yf.download("NFLX", start="2012-05-18", end="2023-01-01", group_by="ticker")
-    FDX = yf.download("FDX", start="2012-05-18", end="2023-01-01", group_by="ticker")
-    return AMZN, MSFT, NFLX, FDX
+# Clone the GitHub repository
+import git
+import os
 
+# Specify the GitHub repository URL
+repo_url = "https://github.com/mohanteja7App.git"  # Replace with your GitHub repository URL
+
+# Specify the local directory where you want to clone the repository
+repo_dir = "local_repository"  # Replace with your desired directory name
+
+if not os.path.exists(repo_dir):
+    st.text(f"Cloning the repository from {repo_url} to {repo_dir}")
+    git.Repo.clone_from(repo_url, repo_dir)
+else:
+    st.text(f"Repository already exists in {repo_dir}")
+
+# Load the dataset from the cloned repository
+dataset_path = os.path.join(repo_dir, "data.csv")  # Replace with your dataset file name
+df = pd.read_csv(dataset_path)
+
+# Streamlit app starts here
+st.title("Streamlit App with GitHub Dataset")
+
+# Display the loaded dataset
+st.write("Loaded Dataset:")
+st.dataframe(df)
 # Portfolio optimization functions
 # ...
 
