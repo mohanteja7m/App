@@ -103,7 +103,7 @@ min_volatility_result = min_volatility(log_return)
 return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
 
 # Display portfolio statistics and plot
-st.write(f"Maximum Sharpe Ratio Portfolio:")
+st.write(f"Maximum Sharpe Ratio Portfolio: {sharpe_maximum:.2%}")
 st.write(f"Expected Annual Return: {return_p:.2%}")
 st.write(f"Annual Volatility: {vol_p:.2%}")
 
@@ -128,3 +128,6 @@ ax.scatter(vol_min, return_min, c='g', marker='*', s=500, label='Minimum Volatil
 ax.legend()
 
 st.pyplot(fig)
+tickers = []
+for i in dataset[['AMAZON','MICROSOFT','FDX','Netflix']].columns:
+    tickers.append(i)
