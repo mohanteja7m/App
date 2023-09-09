@@ -24,36 +24,147 @@ else:
 
 # Load the dataset from the cloned repository
 dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your dataset file name
-df = pd.read_csv(dataset_path)
+dataset = pd.read_csv(dataset_path)
 
 # Streamlit app starts here
 st.title("Streamlit App with GitHub Dataset")
 
 # Display the loaded dataset
 st.write("Loaded Dataset:")
-st.dataframe(df)
-# Portfolio optimization functions
-# ...
+st.dataframe(dataset)
+st.sidebar.header('Portfolio Weights')
+stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
+weights = {}
 
-# Streamlit App
-def main():
-    st.title("Portfolio Optimization with Streamlit")
+for stock in stocks:
+    weights[stock] = st.sidebar.slider(f"{stock} Weight", 0.0, 1.0, 0.25, 0.05)
 
-    st.sidebar.header("Portfolio Parameters")
+# Calculate portfolio statistics
+st.sidebar.header('Portfolio Statistics')
 
-    # Add Streamlit sidebar widgets for user input (e.g., portfolio parameters)
+# Calculate portfolio returns
+portfolio_returns = np.sum(dataset.pct_change().mean() * list(weights.values())) * 252
 
-    st.sidebar.subheader("Download Stock Data")
-    if st.sidebar.button("Download Data"):
-        st.sidebar.text("Downloading stock data...")
-        AMZN, MSFT, NFLX, FDX = download_stock_data()
-        st.sidebar.text("Data downloaded successfully!")
+# Calculate portfolio volatility
+portfolio_volatility = np.sqrt(
+    np.dot(list(weights.values()).T, np.dot(dataset.pct_change().cov() * 252, list(weights.values()))))
 
-    # Perform portfolio optimization using your functions
-    # ...
+# Calculate Sharpe Ratio
+risk_free_rate = 0.0  # Change this to actual risk-free rate
+sharpe_ratio = (portfolio_returns - risk_free_rate) / portfolio_volatility
 
-    # Create interactive plots or display optimization results
-    # ...
+# Display portfolio statistics
+st.sidebar.write('**Portfolio Statistics**')
+st.sidebar.write(f'Expected Annual Return: {portfolio_returns:.2%}')
+st.sidebar.write(f'Annual Volatility: {portfolio_volatility:.2%}')
+st.sidebar.write(f'Sharpe Ratio: {sharpe_ratio:.2f}')
 
-if __name__ == "__main__":
-    main()
+# Main content
+st.header('Portfolio Visualization')
+
+# Plot boxplot
+st.subheader('Boxplot of Stock Prices')
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=dataset)
+plt.title("Boxplot of Stock Prices")
+st.pyplot()
+
+# Plot scatter matrix
+st.subheader('Scatter Matrix of Stock Prices')
+sns.pairplot(dataset)
+st.pyplot()
+
+# Plot daily close prices
+st.subheader('Daily Close Prices of Stocks')
+plt.figure(figsize=(10, 5))
+plt.plot(dataset)
+plt.title('Daily Close Prices of Stocks')
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.legend(dataset.columns)
+st.pyplot()
+
+# Calculate and display correlation heatmap
+corr = dataset.corr()
+st.subheader('Correlation Heatmap')
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr, annot=True, cmap='coolwarm')
+st.pyplot()
+
+# Portfolio Optimization Section
+st.header('Portfolio Optimization')
+
+# Efficient Frontier Calculation
+num_ports = 5000
+all_weights = np.zeros((num_ports, len(stocks)))
+ret_arr = np.zeros(num_ports)
+vol_arr = np.zeros(num_ports)
+sharpe_arr = np.zeros(num_ports)
+
+for ind in range(num_ports):
+    # Generate random weights
+    weights = np.random.random(len(stocks))
+    weights /= np.sum(weights)
+
+    # Save the weights
+    all_weights[ind, :] = weights
+
+    # Expected Portfolio Return
+    ret_arr[ind] = np.sum((dataset.pct_change().mean() * weights) * 252)
+
+    # Expected Portfolio Volatility
+    vol_arr[ind] = np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
+
+    # Sharpe Ratio
+    sharpe_arr[ind] = ret_arr[ind] / vol_arr[ind]
+
+# Find portfolio with maximum Sharpe Ratio
+max_sr_ret = ret_arr[sharpe_arr.argmax()]
+max_sr_vol = vol_arr[sharpe_arr.argmax()]
+
+# Plot Efficient Frontier
+st.subheader('Efficient Frontier')
+plt.figure(figsize=(10, 5))
+plt.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='plasma')
+plt.colorbar(label='Sharpe Ratio')
+plt.xlabel('Volatility')
+plt.ylabel('Return')
+plt.title('Efficient Frontier')
+plt.scatter(max_sr_vol, max_sr_ret, c='red', s=50, edgecolors='black', label='Maximum Sharpe Ratio')
+plt.legend()
+st.pyplot()
+
+# Portfolio Optimization using SciPy
+st.subheader('Portfolio Optimization using SciPy')
+
+# Define portfolio statistics functions
+def portfolio_volatility(weights):
+    return np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
+
+def portfolio_return(weights):
+    return np.sum(dataset.pct_change().mean() * weights) * 252
+
+# Create constraints
+constraints = ({'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1})
+
+# Initial Guess (equal distribution)
+initial_guess = [1 / len(stocks)] * len(stocks)
+
+# Optimize portfolio for maximum Sharpe Ratio
+optimal_weights = minimize(negativeSR, initial_guess, method='SLSQP', bounds=[(0, 1)] * len(stocks),
+                           constraints=constraints)
+
+# Display optimized portfolio weights
+st.write('**Optimized Portfolio Weights**')
+for i, stock in enumerate(stocks):
+    st.write(f"{stock}: {optimal_weights.x[i]:.2%}")
+
+# Display optimized portfolio statistics
+st.subheader('Optimized Portfolio Statistics')
+
+# Calculate portfolio statistics for the optimized portfolio
+optimal_portfolio_returns = portfolio_return(optimal_weights.x)
+optimal_portfolio_volatility = portfolio_volatility(optimal_weights.x)
+
+# Calculate Sharpe Ratio for the optimized portfolio
+optimal_sharpe_ratio = (optimal_portfolio_returns - risk_free_rate) / optimal_portfolio_volatility
