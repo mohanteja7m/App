@@ -11,7 +11,7 @@ import git
 import os
 
 # Specify the GitHub repository URL
-repo_url = "https://github.com/mohanteja7App.git"  # Replace with your GitHub repository URL
+repo_url = "https://github.com/mohanteja7/App.git"  # Replace with your GitHub repository URL
 
 # Specify the local directory where you want to clone the repository
 repo_dir = "local_repository"  # Replace with your desired directory name
