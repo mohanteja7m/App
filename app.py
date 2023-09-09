@@ -203,3 +203,25 @@ optimal_portfolio_volatility = portfolio_volatility(optimal_weights.x)
 
 # Calculate Sharpe Ratio for the optimized portfolio
 optimal_sharpe_ratio = (optimal_portfolio_returns - risk_free_rate) / optimal_portfolio_volatility
+st.write(f'Expected Annual Return (Optimized): {optimal_portfolio_returns:.2%}')
+st.write(f'Annual Volatility (Optimized): {optimal_portfolio_volatility:.2%}')
+st.write(f'Sharpe Ratio (Optimized): {optimal_sharpe_ratio:.2f}')
+
+# Efficient Frontier plot with optimized portfolio
+st.subheader('Efficient Frontier with Optimized Portfolio')
+plt.figure(figsize=(10, 5))
+plt.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='plasma')
+plt.colorbar(label='Sharpe Ratio')
+plt.xlabel('Volatility')
+plt.ylabel('Return')
+plt.title('Efficient Frontier with Optimized Portfolio')
+plt.scatter(max_sr_vol, max_sr_ret, c='red', s=50, edgecolors='black', label='Maximum Sharpe Ratio')
+plt.scatter(optimal_portfolio_volatility, optimal_portfolio_returns, c='green', s=50, edgecolors='black',
+            label='Optimized Portfolio')
+plt.legend()
+st.pyplot()
+
+# Display optimal portfolio weights
+st.subheader('Optimized Portfolio Weights')
+for i, stock in enumerate(stocks):
+    st.write(f"{stock}: {optimal_weights.x[i]:.2%}")
