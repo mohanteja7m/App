@@ -56,7 +56,7 @@ def min_volatility(log_return):
                     constraints=weight_constraints)
 
 
-log_return = np.log(df / df.shift(1)).dropna()
+log_return = np.log(dataset / dataset.shift(1)).dropna()
 
 # User inputs for risk-free rate and portfolio size
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
