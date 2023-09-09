@@ -23,7 +23,7 @@ else:
     st.text(f"Repository already exists in {repo_dir}")
 
 # Load the dataset from the cloned repository
-dataset_path = os.path.join(repo_dir, "data.csv")  # Replace with your dataset file name
+dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your dataset file name
 df = pd.read_csv(dataset_path)
 
 # Streamlit app starts here
