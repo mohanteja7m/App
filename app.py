@@ -101,7 +101,7 @@ def log_returns(prices):
 def arithmetic_returns(prices):
     return prices/prices.shift(1) - 1
 log_return = log_returns(prices=dataset).dropna()
-weights /= np.sum(weights_array)
+weights_array /= np.sum(weights_array)
 print("*****************   Markowitz Portfolio Optimization   **********************")
 print(f'Normalized Weights : {weights.flatten()}')
 
