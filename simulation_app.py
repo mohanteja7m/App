@@ -21,6 +21,7 @@ else:
 dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your dataset file name
 dataset = pd.read_csv(dataset_path)
 st.title("Simulation of Portfoilo Optimization")
+sigma            = log_return.cov()
 
 # Function to calculate portfolio performance metrics
 def portfolio_performance(weight, log_return):
