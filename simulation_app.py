@@ -108,9 +108,8 @@ st.write(f"Maximum Sharpe Ratio: {sharpe_maximum['fun']:.2f}")
 st.write(f"Expected Annual Return: {return_p:.2%}")
 st.write(f"Annual Volatility: {vol_p:.2%}")
 
-st.write(f"Minimum Volatility Portfolio:")
+st.write(f"Minimum Volatility Portfolio:{vol_min:.2%}")
 st.write(f"Expected Annual Return: {return_min:.2%}")
-st.write(f"Annual Volatility: {vol_min:.2%}")
 
 st.subheader("Efficient Frontier")
 target = np.linspace(return_min, 1.02, 100)
