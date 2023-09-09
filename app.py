@@ -45,8 +45,11 @@ st.sidebar.header('Portfolio Statistics')
 # Calculate portfolio returns
 portfolio_returns = np.sum(dataset.pct_change().mean() * list(weights.values())) * 252
 
+# Convert the portfolio weights list to a NumPy array
+weights_array = np.array(list(weights.values()))
+
 # Calculate portfolio volatility
-portfolio_volatility = np.sqrt(np.dot(list(weights.values()).T, np.dot(dataset.pct_change().cov() * 252, list(weights.values()))))
+portfolio_volatility = np.sqrt(np.dot(weights_array.T, np.dot(dataset.pct_change().cov() * 252, weights_array)))
 
 # Calculate Sharpe Ratio
 risk_free_rate = 0.0  # Change this to actual risk-free rate
