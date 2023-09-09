@@ -138,19 +138,19 @@ def calc_portfolio_perf(weights, mean_returns, cov, rf):# portfolio performance,
     sharpe_ratio = (portfolio_return - rf) / portfolio_std
     return portfolio_return, portfolio_std, sharpe_ratio
 
-def simulate_random_portfolios(num_portfolios, mean_returns, cov, rf): # random simulation
-    results_matrix = np.zeros((len(mean_returns)+3, num_portfolios))
+def simulate_random_portfolios(num_portfolios, mean_returns, cov, rf):
+    num_assets = len(mean_returns)  # Convert the number of assets to an integer
+    results_matrix = np.zeros((num_assets + 3, num_portfolios))  # Use num_assets as an integer
     for i in range(num_portfolios):
-        weights=np.random.random(len(mean_returns))
+        weights = np.random.random(num_assets)
         weights /= np.sum(weights)
         portfolio_return, portfolio_std, sharpe_ratio = calc_portfolio_perf(weights, mean_returns, cov, rf)
-        results_matrix[0,i] = portfolio_return
-        results_matrix[1,i] = portfolio_std
-        results_matrix[2,i] = sharpe_ratio
-        #iterate through the weight vector and add data to results array
-        for j in range(len(weights)):
-            results_matrix[j+3,i] = weights[j]
-    results_df = pd.DataFrame(results_matrix.T,columns=['ret','stdev','sharpe'] + [ticker for ticker in tickers])
+        results_matrix[0, i] = portfolio_return
+        results_matrix[1, i] = portfolio_std
+        results_matrix[2, i] = sharpe_ratio
+        for j in range(num_assets):
+            results_matrix[j + 3, i] = weights[j]
+    results_df = pd.DataFrame(results_matrix.T, columns=['ret', 'stdev', 'sharpe'] + [ticker for ticker in tickers])
     return results_df
 mean_returns = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().mean()
 cov = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().cov()
