@@ -43,6 +43,8 @@ def max_sharpe_ratio(log_return, rf_rate=0.025):
     return minimize(negative_SR, w0, method='SLSQP',
                     bounds=((0, 1),) * n_assets,
                     constraints=weight_constraints)
+def portfolio_volatility(weight):
+    return np.sqrt(np.dot(weight.T, np.dot(sigma,weight)))*np.sqrt(252)
 
 # Function to optimize for minimum volatility
 def min_volatility(log_return):
