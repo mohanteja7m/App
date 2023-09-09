@@ -73,7 +73,7 @@ st.pyplot()
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Plot daily close prices
-st.subheader('Daily Close Prices of Stocks')
+st.subheader('Daily Close Prices of Portfolios')
 plt.figure(figsize=(10, 5))
 plt.plot(dataset)
 plt.title('Daily Close Prices of Stocks')
@@ -87,6 +87,10 @@ corr = dataset.corr()
 st.subheader('Correlation Heatmap')
 plt.figure(figsize=(8, 6))
 sns.heatmap(corr, annot=True, cmap='coolwarm')
+st.pyplot()
+
+st.subheader("Distribution of the Portfolio")
+pd.plotting.scatter_matrix(dataset[['AMAZON','MICROSOFT','FDX', 'Netflix']], figsize=(10,10))
 st.pyplot()
 
 # Portfolio Optimization Section
