@@ -111,10 +111,10 @@ Markowitz_log_ret
 mean_log_returns = Markowitz_log_ret.mean().values
 
 # Calculate expected return (weighted sum of mean returns)
-Markowitz_exp_ret = mean_log_returns.dot(weights) * 252
+Markowitz_exp_ret = mean_log_returns.dot(weights_array) * 252
 
 # Calculate expected volatility (risk)
-Markowitz_exp_vol = np.sqrt(weights.T.dot(252 * Markowitz_log_ret.cov().dot(weights)))
+Markowitz_exp_vol = np.sqrt(weights_array.T.dot(252 * Markowitz_log_ret.cov().dot(weights_array)))
 
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
