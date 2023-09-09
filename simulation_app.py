@@ -58,6 +58,8 @@ def min_volatility(log_return):
     return minimize(portfolio_volatility, w0, method='SLSQP',
                     bounds=bounds,
                     constraints=weight_constraints)
+def efficient_frontier(return_range):
+    return [efficient_portfolio_target(ret) for ret in return_range]
 
 
 # User inputs for risk-free rate and portfolio size
