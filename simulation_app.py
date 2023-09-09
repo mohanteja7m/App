@@ -158,10 +158,10 @@ def simulate_random_portfolios(num_portfolios, mean_returns, cov, rf):
 
 # ...
 
-results_frame = simulate_random_portfolios(num_portfolios, mean_returns, cov, rf_rate)
 
 mean_returns = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().mean()
 cov = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().cov() 
+results_frame = simulate_random_portfolios(num_portfolios, mean_returns, cov, rf_rate)
 font1 = {'family':'serif','color':'darkred','size':20,'weight':'bold'}
 font2 = {'family':'serif','color':'darkred','size':20,'weight':'bold'}
 #Locate position of portfolio with highest Sharpe Ratio
