@@ -27,10 +27,10 @@ dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your datase
 dataset = pd.read_csv(dataset_path)
 
 # Streamlit app starts here
-st.title("Streamlit App with GitHub Dataset")
+st.title("Portfolio Management Optimization")
 
 # Display the loaded dataset
-st.write("Loaded Dataset:")
+st.write("Loaded Portfolio:")
 st.dataframe(dataset)
 st.sidebar.header('Portfolio Weights')
 stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
