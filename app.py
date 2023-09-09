@@ -94,7 +94,7 @@ pd.plotting.scatter_matrix(dataset[['AMAZON','MICROSOFT','FDX', 'Netflix']], fig
 st.pyplot()
 
 # Portfolio Optimization Section
-st.header('Portfolio Optimization')
+st.header('Markowitz Portfolio Optimization')
 def log_returns(prices):
     return np.log(prices / prices.shift(1))
 
@@ -102,7 +102,6 @@ def arithmetic_returns(prices):
     return prices/prices.shift(1) - 1
 log_return = log_returns(prices=dataset).dropna()
 weights_array /= np.sum(weights_array)
-st.write("*****************   Markowitz Portfolio Optimization   **********************")
 
 # We generally do log return instead of return
 Markowitz_log_ret = np.log(dataset / dataset.shift(1))
@@ -110,7 +109,7 @@ Markowitz_log_ret = np.log(dataset / dataset.shift(1))
 mean_log_returns = Markowitz_log_ret.mean().values
 # Calculate expected return (weighted sum of mean returns)
 Markowitz_exp_ret = mean_log_returns.dot(weights_array) * 252
-st.write(f'\nExpected return of the portfolio is : {Markowitz_exp_ret}')
+st.subheader(f'\nExpected return of the portfolio is : {Markowitz_exp_ret}')
 
 # Calculate expected volatility (risk)
 Markowitz_exp_vol = np.sqrt(weights_array.T.dot(252 * Markowitz_log_ret.cov().dot(weights_array)))
