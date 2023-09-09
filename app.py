@@ -161,15 +161,23 @@ plt.scatter(min_var_vol, min_var_ret, c='green', s=50, edgecolors='black', label
 plt.legend()
 st.pyplot()
 
-# Portfolio Optimization using SciPy
-st.subheader('Portfolio Optimization using SciPy')
-
 # Define portfolio statistics functions
 def portfolio_volatility(weights):
     return np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
 
 def portfolio_return(weights):
     return np.sum(dataset.pct_change().mean() * weights) * 252
+    
+def portfolio_performance(weight):
+    return_p = portfolio_return(weight)
+    vol_p    = portfolio_volatility(weight)
+    return return_p, vol_p
+    
+def negativeSR(weight):
+    return_p, vol_p = portfolio_performance(weight)
+    rf_rate         = 0.025
+    return -(return_p - rf_rate)/vol_p
+
 
 # Create constraints
 constraints = ({'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1})
