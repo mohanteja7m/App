@@ -72,15 +72,6 @@ plt.title("Boxplot of Stock Prices")
 st.pyplot()
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-# Plot scatter matrix
-st.subheader('Scatter Matrix of Stock Prices')
-
-# Add this context manager to set use_inf_as_na to True
-with pd.option_context('mode.use_inf_as_na', True):
-    sns.pairplot(dataset)
-
-st.pyplot()
-
 # Plot daily close prices
 st.subheader('Daily Close Prices of Stocks')
 plt.figure(figsize=(10, 5))
