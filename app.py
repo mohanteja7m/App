@@ -67,7 +67,7 @@ st.header('Portfolio Visualization')
 # Plot boxplot
 st.subheader('Boxplot of Stock Prices')
 plt.figure(figsize=(10, 5))
-sns.boxplot(data=dataset)
+sns.boxplot(data=[dataset['AMAZON'], dataset['MICROSOFT'], dataset['FDX'], dataset['Netflix']])
 plt.title("Boxplot of Stock Prices")
 st.pyplot()
 
