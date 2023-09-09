@@ -58,9 +58,9 @@ def min_volatility(log_return):
 
 log_return = np.log(df / df.shift(1)).dropna()
 
- # User inputs for risk-free rate and portfolio size
- rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
- portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
+# User inputs for risk-free rate and portfolio size
+rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
+portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 
 # Optimize for maximum Sharpe Ratio
 sharpe_maximum = max_sharpe_ratio(log_return, rf_rate / 100)
