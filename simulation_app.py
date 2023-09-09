@@ -23,7 +23,7 @@ dataset = pd.read_csv(dataset_path)
 st.title("Simulation of Portfoilo Optimization")
 log_return = np.log(dataset / dataset.shift(1)).dropna()
 sigma            = log_return.cov()
-
+n_assets         = log_return.shape[1]
 # Function to calculate portfolio performance metrics
 def portfolio_performance(weight, log_return):
     mean_returns = log_return.mean()
