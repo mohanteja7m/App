@@ -72,7 +72,6 @@ plt.title("Boxplot of Stock Prices")
 st.pyplot()
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-pandas._config.config.OptionError: "No such keys(s): 'mode.use_inf_as_null'"
 # Plot scatter matrix
 st.subheader('Scatter Matrix of Stock Prices')
 
