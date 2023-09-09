@@ -70,10 +70,16 @@ plt.figure(figsize=(10, 5))
 sns.boxplot(data=[dataset['AMAZON'], dataset['MICROSOFT'], dataset['FDX'], dataset['Netflix']])
 plt.title("Boxplot of Stock Prices")
 st.pyplot()
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
+pandas._config.config.OptionError: "No such keys(s): 'mode.use_inf_as_null'"
 # Plot scatter matrix
 st.subheader('Scatter Matrix of Stock Prices')
-sns.pairplot(dataset)
+
+# Add this context manager to set use_inf_as_na to True
+with pd.option_context('mode.use_inf_as_na', True):
+    sns.pairplot(dataset)
+
 st.pyplot()
 
 # Plot daily close prices
