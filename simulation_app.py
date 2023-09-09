@@ -21,6 +21,7 @@ else:
 dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your dataset file name
 dataset = pd.read_csv(dataset_path)
 st.title("Simulation of Portfoilo Optimization")
+log_return = np.log(dataset / dataset.shift(1)).dropna()
 sigma            = log_return.cov()
 
 # Function to calculate portfolio performance metrics
@@ -58,8 +59,6 @@ def min_volatility(log_return):
                     bounds=bounds,
                     constraints=weight_constraints)
 
-
-log_return = np.log(dataset / dataset.shift(1)).dropna()
 
 # User inputs for risk-free rate and portfolio size
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
