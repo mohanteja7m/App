@@ -155,7 +155,8 @@ def simulate_random_portfolios(num_portfolios, mean_returns, cov, rf): # random 
 mean_returns = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().mean()
 cov = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().cov()
 results_frame =simulate_random_portfolios(num_portfolios, mean_returns,cov, rf_rate) 
-results_frame.sum(axis=1)-results_frame["ret"]-results_frame["stdev"]-results_frame["sharpe"]
+font1 = {'family':'serif','color':'darkred','size':20,'weight':'bold'}
+font2 = {'family':'serif','color':'darkred','size':20,'weight':'bold'}
 #Locate position of portfolio with highest Sharpe Ratio
 max_sharpe_port=results_frame.iloc[results_frame["sharpe"].idxmax()] # max sharp ratio rouge
 #locate positon of portfolio with minimum standard deviation
