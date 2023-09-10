@@ -67,13 +67,23 @@ st.header('Portfolio Visualization')
 # Plot boxplot
 st.subheader('Boxplot of Stock Prices')
 plt.figure(figsize=(10, 5))
-sns.boxplot(data=[dataset['AMAZON'], dataset['MICROSOFT'], dataset['FDX'], dataset['Netflix']])
+boxplot = sns.boxplot(data=[dataset['AMAZON'], dataset['MICROSOFT'], dataset['FDX'], dataset['Netflix']])
+boxplot.set(xlabel='Stocks', ylabel='Price')
+boxplot.set_xticklabels(['AMAZON', 'MICROSOFT', 'FDX', 'Netflix'])  # Set the x-axis labels
+
+# Add legends
+legends = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
+for i, label in enumerate(legends):
+    boxplot.artists[i].set_facecolor('C' + str(i))  # Set box colors
+    plt.text(i, -0.1, label, ha='center', va='center', transform=boxplot.transAxes)
+
 plt.title("Boxplot of Stock Prices")
 st.pyplot()
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
+
 # Plot daily close prices
-st.subheader('Daily Close Prices of Portfolios')
+st.subheader('Daily Prices of Portfolios')
 plt.figure(figsize=(10, 5))
 plt.plot(dataset)
 plt.title('Daily Close Prices of Stocks')
