@@ -69,7 +69,7 @@ st.subheader('Boxplot of Stock Prices')
 plt.figure(figsize=(10, 5))
 boxplot = sns.boxplot(data=[dataset['AMAZON'], dataset['MICROSOFT'], dataset['FDX'], dataset['Netflix']])
 boxplot.set(xlabel='Stocks', ylabel='Price')
-#boxplot.set_xticklabels(['AMAZON', 'MICROSOFT', 'FDX', 'Netflix'])  # Set the x-axis labels
+boxplot.set_xticklabels(['AMAZON', 'MICROSOFT', 'FDX', 'Netflix'])  # Set the x-axis labels
 
 # Add legends
 legends = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
