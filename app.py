@@ -75,7 +75,7 @@ boxplot.set_xticklabels(['AMAZON', 'MICROSOFT', 'FDX', 'Netflix'])  # Set the x-
 legends = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
 for i, label in enumerate(legends):
     boxplot.artists[i].set_facecolor('C' + str(i))  # Set box colors
-    plt.text(i, -0.1, label, ha='center', va='center', transform=boxplot.transAxes)
+    #plt.text(i, -0.1, label, ha='center', va='center', transform=boxplot.transAxes)
 
 plt.title("Boxplot of Stock Prices")
 st.pyplot()
