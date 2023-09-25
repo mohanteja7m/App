@@ -198,11 +198,6 @@ initial_guess = [1 / len(stocks)] * len(stocks)
 optimal_weights = minimize(negativeSR, initial_guess, method='SLSQP', bounds=[(0, 1)] * len(stocks),
                            constraints=constraints)
 
-# Display optimized portfolio weights
-st.write('**Optimized Portfolio Weights**')
-for i, stock in enumerate(stocks):
-    st.write(f"{stock}: {optimal_weights.x[i]:.2%}")
-
 # Display optimized portfolio statistics
 st.subheader('Optimized Portfolio Statistics')
 
