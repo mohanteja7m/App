@@ -169,8 +169,6 @@ plt.scatter(max_sr_vol, max_sr_ret, c='red', s=500, edgecolors='black', label='M
 plt.scatter(min_vol_vol, min_vol_ret, c='green', s=500, edgecolors='black', label='Minimum Variance')
 plt.legend()
 st.pyplot()
-
-st.pyplot(fig)
 tickers = []
 for i in dataset[['AMAZON','MICROSOFT','FDX','Netflix']].columns:
     tickers.append(i)
