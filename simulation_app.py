@@ -133,53 +133,40 @@ st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
 st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
-all_weights = np.zeros((num_portfolios, len(stocks)))
-ret_arr = np.zeros(num_portfolios)
-vol_arr = np.zeros(num_portfolios)
-sharpe_arr = np.zeros(num_portfolios)
 
 st.subheader("Efficient Frontier")
-min_volatility_result = min_volatility(log_return)
-return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
-target = np.linspace(return_min, 1.02, 100)
-efficient_portfolios = [portfolio_performance(eff['x'], log_return) for eff in efficient_frontier(target)]
+portfolio_returns = np.zeros(num_portfolios)
+portfolio_volatilities = np.zeros(num_portfolios)
+sharpe_ratios = np.zeros(num_portfolios)
 
-efficient_returns = [eff[0] for eff in efficient_portfolios]
-efficient_volatilities = [eff[1] for eff in efficient_portfolios]
 for ind in range(num_portfolios):
     # Generate random weights
     weights = np.random.random(len(stocks))
     weights /= np.sum(weights)
 
-    # Save the weights
-    all_weights[ind, :] = weights
-
-    # Expected Portfolio Return
-    ret_arr[ind] = np.sum((dataset.pct_change().mean() * weights) * 252)
-
-    # Expected Portfolio Volatility
-    vol_arr[ind] = np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
-
-    # Sharpe Ratio
-    sharpe_arr[ind] = ret_arr[ind] / vol_arr[ind]
+    # Calculate portfolio statistics
+    portfolio_returns[ind] = np.sum((dataset.pct_change().mean() * weights) * 252)
+    portfolio_volatilities[ind] = np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
+    sharpe_ratios[ind] = portfolio_returns[ind] / portfolio_volatilities[ind]
 
 # Find portfolio with maximum Sharpe Ratio
-max_sr_ret = ret_arr[sharpe_arr.argmax()]
-max_sr_vol = vol_arr[sharpe_arr.argmax()]
+max_sr_index = sharpe_ratios.argmax()
+max_sr_ret = portfolio_returns[max_sr_index]
+max_sr_vol = portfolio_volatilities[max_sr_index]
 
-min_var_ret = ret_arr[vol_arr.argmin()]
-min_var_vol = vol_arr.min()
+min_vol_index = portfolio_volatilities.argmin()
+min_vol_ret = portfolio_returns[min_vol_index]
+min_vol_vol = portfolio_volatilities[min_vol_index]
 
 # Plot Efficient Frontier
-st.subheader('Efficient Frontier')
 plt.figure(figsize=(10, 5))
-plt.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='plasma')
+plt.scatter(portfolio_volatilities, portfolio_returns, c=sharpe_ratios, cmap='plasma')
 plt.colorbar(label='Sharpe Ratio')
 plt.xlabel('Volatility')
 plt.ylabel('Return')
 plt.title('Efficient Frontier')
 plt.scatter(max_sr_vol, max_sr_ret, c='red', s=500, edgecolors='black', label='Maximum Sharpe Ratio')
-plt.scatter(min_var_vol, min_var_ret, c='green', s=500, edgecolors='black', label='Minimum Variance')
+plt.scatter(min_vol_vol, min_vol_ret, c='green', s=500, edgecolors='black', label='Minimum Variance')
 plt.legend()
 st.pyplot()
 
