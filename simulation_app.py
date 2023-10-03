@@ -20,14 +20,14 @@ else:
 # Load the dataset from the cloned repository
 dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your dataset file name
 dataset = pd.read_csv(dataset_path)
-@st.cache  # 
+
 st.title("Simulation of Portfoilo Optimization")
 log_return = np.log(dataset / dataset.shift(1)).dropna()
 sigma            = log_return.cov()
 n_assets         = log_return.shape[1]
 mean_returns     = log_return.mean()
 # Function to calculate portfolio performance metrics
-@st.cache 
+ 
 def portfolio_performance(weight, log_return):
     mean_returns = log_return.mean()
     sigma = log_return.cov()
@@ -57,7 +57,7 @@ def max_sharpe_ratio(log_return, rf_rate=0.025):
                     constraints=weight_constraints)
 def portfolio_volatility(weight):
     return np.sqrt(np.dot(weight.T, np.dot(sigma,weight)))*np.sqrt(252)
-@st.cache 
+
 # Function to optimize for minimum volatility
 def min_volatility(log_return):
     n_assets = log_return.shape[1]
@@ -69,7 +69,7 @@ def min_volatility(log_return):
                     bounds=bounds,
 
                     constraints=weight_constraints)
-@st.cache 
+ 
 def min_vol():
 
     n_assets           = log_return.shape[1]
@@ -93,7 +93,7 @@ def efficient_portfolio_target(target):
 def efficient_frontier(return_range):
     return [efficient_portfolio_target(ret) for ret in return_range]
 
-@st.cache 
+
 # User inputs for risk-free rate and portfolio size
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
@@ -101,26 +101,26 @@ num_portfolios = int(st.number_input("Number of Portfolios to Simulate", min_val
 st.sidebar.header('Portfolio Weights')
 stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
 weights = {}
-@st.cache 
+ 
 for stock in stocks:
     weights[stock] = st.sidebar.slider(f"{stock} Weight", 0.0, 1.0, 0.25, 0.05)
 
 # Calculate portfolio statistics
 st.sidebar.header('Portfolio Statistics')
-@st.cache 
+ 
 # Calculate portfolio returns
 portfolio_returns = np.sum(dataset.pct_change().mean() * list(weights.values())) * 252
 
 # Convert the portfolio weights list to a NumPy array
 weights_array = np.array(list(weights.values()))
-@st.cache 
+ 
 # Calculate portfolio volatility
 portfolio_vol = np.sqrt(np.dot(weights_array.T, np.dot(dataset.pct_change().cov() * 252, weights_array)))
 
 # Calculate Sharpe Ratio
 risk_free_rate = st.number_input("Enter the risk-free rate (as a decimal):", min_value=0.0, value=0.03, step=0.01)
 sharpe_ratio = (portfolio_returns - risk_free_rate) / portfolio_vol
-@st.cache 
+ 
 # Display portfolio statistics
 st.sidebar.write('**Portfolio Statistics**')
 st.sidebar.write(f'Expected Annual Return: {portfolio_returns:.2%}')
@@ -128,7 +128,7 @@ st.sidebar.write(f'Annual Volatility: {portfolio_vol:.2%}')
 st.sidebar.write(f'Sharpe Ratio: {sharpe_ratio:.2f}')
 weights_array /= np.sum(weights_array)
 
-@st.cache 
+ 
 # We generally do log return instead of return
 Markowitz_log_ret = np.log(dataset / dataset.shift(1))
 # Calculate mean log returns as a NumPy array
@@ -139,7 +139,7 @@ st.subheader(f'\nExpected return of the portfolio is : {Markowitz_exp_ret}')
 # Calculate expected volatility (risk)
 Markowitz_exp_vol = np.sqrt(weights_array.T.dot(252 * Markowitz_log_ret.cov().dot(weights_array)))
 st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
-@st.cache 
+ 
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
 st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
@@ -147,7 +147,7 @@ all_weights = np.zeros((num_portfolios, len(stocks)))
 ret_arr = np.zeros(num_portfolios)
 vol_arr = np.zeros(num_portfolios)
 sharpe_arr = np.zeros(num_portfolios)
-@st.cache 
+ 
 for ind in range(num_portfolios):
     # Generate random weights
     weights = np.random.random(len(stocks))
@@ -164,14 +164,14 @@ for ind in range(num_portfolios):
 
     # Sharpe Ratio
     sharpe_arr[ind] = ret_arr[ind] / vol_arr[ind]
-@st.cache 
+
 # Find portfolio with maximum Sharpe Ratio
 max_sr_ret = ret_arr[sharpe_arr.argmax()]
 max_sr_vol = vol_arr[sharpe_arr.argmax()]
 
 min_var_ret = ret_arr[vol_arr.argmin()]
 min_var_vol = vol_arr.min()
-@st.cache 
+ 
 # Plot Efficient Frontier
 st.subheader('Efficient Frontier')
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -194,21 +194,21 @@ initial_guess = [1 / len(stocks)] * len(stocks)
 # Optimize portfolio for maximum Sharpe Ratio
 optimal_weights = minimize(negativeSR, initial_guess, method='SLSQP', bounds=[(0, 1)] * len(stocks),
                            constraints=constraints)
-@st.cache 
+ 
 # Display optimized portfolio statistics
 st.subheader('Optimized Portfolio Statistics')
 
 # Calculate portfolio statistics for the optimized portfolio
 optimal_portfolio_returns = portfolio_return(optimal_weights.x)
 optimal_portfolio_volatility = portfolio_volatility(optimal_weights.x)
-@st.cache 
+ 
 # Calculate Sharpe Ratio for the optimized portfolio
 optimal_sharpe_ratio = (optimal_portfolio_returns - risk_free_rate) / optimal_portfolio_volatility
 st.write(f'Expected Annual Return (Optimized): {optimal_portfolio_returns:.2%}')
 st.write(f'Annual Volatility (Optimized): {optimal_portfolio_volatility:.2%}')
 st.write(f'Sharpe Ratio (Optimized): {optimal_sharpe_ratio:.2f}')
 
-@st.cache 
+ 
 # Efficient Frontier plot with optimized portfolio
 st.subheader('Efficient Frontier with Optimized Portfolio')
 plt.figure(figsize=(10, 5))
@@ -222,7 +222,7 @@ plt.scatter(optimal_portfolio_volatility, optimal_portfolio_returns, c='green', 
             label='Optimized Portfolio')
 plt.legend()
 st.pyplot()
-@st.cache 
+ 
 # Display optimal portfolio weights
 st.subheader('Optimized Portfolio Weights')
 for i, stock in enumerate(stocks):
@@ -230,11 +230,11 @@ for i, stock in enumerate(stocks):
 
 min_volatility_result = min_volatility(log_return)
 return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
-@st.cache 
+
 tickers = []
 for i in dataset[['AMAZON','MICROSOFT','FDX','Netflix']].columns:
     tickers.append(i)
-@st.cache 
+ 
 def calc_portfolio_perf(weights, mean_returns, cov, rf):# portfolio performance, calculate the annualised return, sharpe ratio
     portfolio_return = np.sum(mean_returns*weights)*252 #252 working days at the stock exchange
     portfolio_std = np.sqrt(np.dot(weights.T,np.dot(cov,weights)))*np.sqrt(252) # np.dot multiplication of matrices
@@ -242,7 +242,7 @@ def calc_portfolio_perf(weights, mean_returns, cov, rf):# portfolio performance,
     return portfolio_return, portfolio_std, sharpe_ratio
 
 # ...
-@st.cache 
+ 
 def simulate_random_portfolios(num_portfolios, mean_returns, cov, rf):
     num_assets = len(mean_returns)  # Convert the number of assets to an integer
     num_portfolios = int(num_portfolios)  # Convert the number of portfolios to an integer
@@ -261,14 +261,14 @@ def simulate_random_portfolios(num_portfolios, mean_returns, cov, rf):
 
 # ...
 
-@st.cache 
+
 mean_returns = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().mean()
 cov = dataset[['AMAZON','MICROSOFT','FDX','Netflix']].pct_change().cov() 
 results_frame = simulate_random_portfolios(num_portfolios, mean_returns, cov, rf_rate)
 font1 = {'family':'serif','color':'darkred','size':20,'weight':'bold'}
 font2 = {'family':'serif','color':'darkred','size':20,'weight':'bold'}
 #Locate position of portfolio with highest Sharpe Ratio
-@st.cache 
+ 
 max_sharpe_port=results_frame.iloc[results_frame["sharpe"].idxmax()] # max sharp ratio rouge
 #locate positon of portfolio with minimum standard deviation
 min_vol_port = results_frame.iloc[results_frame["stdev"].idxmin()] # min volatility = min variance portfolio vert
@@ -279,18 +279,18 @@ plt.title('Optimization of the portfolio',fontdict=font1)
 plt.xlabel('Risk/Annualised Volatility',fontdict=font2)
 plt.ylabel('Annualised Returns',fontdict=font2)
 #plt.colorbar () # match the colorbar
-@st.cache 
+
 plt.colorbar().set_label('Sharpe Ratio', size= 20, color = 'g', family='serif',weight='bold')
 target               = np.linspace(return_min,1.02,100)
 #plot red star to highlight position of portfolio with highest Sharpe Ratio
 plt.scatter(max_sharpe_port[1],max_sharpe_port[0],marker=(5,1,0),color='r',s=500, label = 'Maximum Sharpe Ratio')
 #plot green star to highlight position of minimum vartance portfolio
-@st.cache 
+
 plt.scatter(min_vol_port[1] ,min_vol_port[0],marker=(5,1,0),color='g', s=500, label='Minimum Volatility Portfolio')
 plt.legend(labelspacing=0.8)
 st.pyplot(plt)
 st.subheader("Portfolio with Minimum Variance(Volatility)")
-@st.cache 
+
 min_vol_port.to_frame().T #portfolio with the Lowest variance portfolio
 st.subheader("Portfolio with Maximum Sharpe Ratio(Expected Return)")
 max_sharpe_port.to_frame().T
