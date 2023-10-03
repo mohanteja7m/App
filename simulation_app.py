@@ -96,8 +96,30 @@ portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 num_portfolios = st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1)
 stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
 weights = {}
-weights[stock] = st.sidebar.slider(f"{stock} Weight", 0.0, 1.0, 0.25, 0.05)
+for stock in stocks:
+    weights[stock] = st.sidebar.slider(f"{stock} Weight", 0.0, 1.0, 0.25, 0.05)
+
+# Calculate portfolio statistics
+st.sidebar.header('Portfolio Statistics')
+
+# Calculate portfolio returns
+portfolio_returns = np.sum(dataset.pct_change().mean() * list(weights.values())) * 252
+
+# Convert the portfolio weights list to a NumPy array
 weights_array = np.array(list(weights.values()))
+
+# Calculate portfolio volatility
+portfolio_volatility = np.sqrt(np.dot(weights_array.T, np.dot(dataset.pct_change().cov() * 252, weights_array)))
+
+# Calculate Sharpe Ratio
+risk_free_rate = st.number_input("Enter the risk-free rate (as a decimal):", min_value=0.0, value=0.03, step=0.01)
+sharpe_ratio = (portfolio_returns - rf_rate) / portfolio_volatility
+
+# Display portfolio statistics
+st.sidebar.write('**Portfolio Statistics**')
+st.sidebar.write(f'Expected Annual Return: {portfolio_returns:.2%}')
+st.sidebar.write(f'Annual Volatility: {portfolio_volatility:.2%}')
+st.sidebar.write(f'Sharpe Ratio: {sharpe_ratio:.2f}')
 
 Markowitz_log_ret = np.log(dataset / dataset.shift(1))
 # Calculate mean log returns as a NumPy array
