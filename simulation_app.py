@@ -94,8 +94,10 @@ def efficient_frontier(return_range):
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 num_portfolios = st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1)
+st.sidebar.header('Portfolio Weights')
 stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
 weights = {}
+
 for stock in stocks:
     weights[stock] = st.sidebar.slider(f"{stock} Weight", 0.0, 1.0, 0.25, 0.05)
 
@@ -113,14 +115,18 @@ portfolio_volatility = np.sqrt(np.dot(weights_array.T, np.dot(dataset.pct_change
 
 # Calculate Sharpe Ratio
 risk_free_rate = st.number_input("Enter the risk-free rate (as a decimal):", min_value=0.0, value=0.03, step=0.01)
-sharpe_ratio = (portfolio_returns - rf_rate) / portfolio_volatility
+sharpe_ratio = (portfolio_returns - risk_free_rate) / portfolio_volatility
 
 # Display portfolio statistics
 st.sidebar.write('**Portfolio Statistics**')
 st.sidebar.write(f'Expected Annual Return: {portfolio_returns:.2%}')
 st.sidebar.write(f'Annual Volatility: {portfolio_volatility:.2%}')
 st.sidebar.write(f'Sharpe Ratio: {sharpe_ratio:.2f}')
+log_return = log_returns(prices=dataset).dropna()
+weights_array /= np.sum(weights_array)
 
+
+# We generally do log return instead of return
 Markowitz_log_ret = np.log(dataset / dataset.shift(1))
 # Calculate mean log returns as a NumPy array
 mean_log_returns = Markowitz_log_ret.mean().values
@@ -133,42 +139,90 @@ st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
 st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
-
-st.subheader("Efficient Frontier")
-portfolio_returns = np.zeros(num_portfolios)
-portfolio_volatilities = np.zeros(num_portfolios)
-sharpe_ratios = np.zeros(num_portfolios)
+num_ports = 5000
+all_weights = np.zeros((num_ports, len(stocks)))
+ret_arr = np.zeros(num_portfolios)
+vol_arr = np.zeros(num_portfolios)
+sharpe_arr = np.zeros(num_portfolios)
 
 for ind in range(num_portfolios):
     # Generate random weights
     weights = np.random.random(len(stocks))
     weights /= np.sum(weights)
 
-    # Calculate portfolio statistics
-    portfolio_returns[ind] = np.sum((dataset.pct_change().mean() * weights) * 252)
-    portfolio_volatilities[ind] = np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
-    sharpe_ratios[ind] = portfolio_returns[ind] / portfolio_volatilities[ind]
+    # Save the weights
+    all_weights[ind, :] = weights
+
+    # Expected Portfolio Return
+    ret_arr[ind] = np.sum((dataset.pct_change().mean() * weights) * 252)
+
+    # Expected Portfolio Volatility
+    vol_arr[ind] = np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
+
+    # Sharpe Ratio
+    sharpe_arr[ind] = ret_arr[ind] / vol_arr[ind]
 
 # Find portfolio with maximum Sharpe Ratio
-max_sr_index = int(sharpe_ratios.argmax())
-max_sr_ret = portfolio_returns[max_sr_index]
-max_sr_vol = portfolio_volatilities[max_sr_index]
+max_sr_ret = ret_arr[sharpe_arr.argmax()]
+max_sr_vol = vol_arr[sharpe_arr.argmax()]
 
-min_vol_index = int(portfolio_volatilities.argmin())
-min_vol_ret = portfolio_returns[min_vol_index]
-min_vol_vol = portfolio_volatilities[min_vol_index]
+min_var_ret = ret_arr[vol_arr.argmin()]
+min_var_vol = vol_arr.min()
 
 # Plot Efficient Frontier
+st.subheader('Efficient Frontier')
+st.set_option('deprecation.showPyplotGlobalUse', False)
 plt.figure(figsize=(10, 5))
-plt.scatter(portfolio_volatilities, portfolio_returns, c=sharpe_ratios, cmap='plasma')
+plt.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='plasma')
 plt.colorbar(label='Sharpe Ratio')
 plt.xlabel('Volatility')
 plt.ylabel('Return')
 plt.title('Efficient Frontier')
-plt.scatter(max_sr_vol, max_sr_ret, c='red', s=500, edgecolors='black', label='Maximum Sharpe Ratio')
-plt.scatter(min_vol_vol, min_vol_ret, c='green', s=500, edgecolors='black', label='Minimum Variance')
+plt.scatter(max_sr_vol, max_sr_ret, c='red', s=50, edgecolors='black', label='Maximum Sharpe Ratio')
+plt.scatter(min_var_vol, min_var_ret, c='green', s=50, edgecolors='black', label='Minimum Variance')
 plt.legend()
 st.pyplot()
+# Create constraints
+constraints = ({'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1})
+
+# Initial Guess (equal distribution)
+initial_guess = [1 / len(stocks)] * len(stocks)
+
+# Optimize portfolio for maximum Sharpe Ratio
+optimal_weights = minimize(negativeSR, initial_guess, method='SLSQP', bounds=[(0, 1)] * len(stocks),
+                           constraints=constraints)
+
+# Display optimized portfolio statistics
+st.subheader('Optimized Portfolio Statistics')
+
+# Calculate portfolio statistics for the optimized portfolio
+optimal_portfolio_returns = portfolio_return(optimal_weights.x)
+optimal_portfolio_volatility = portfolio_volatility(optimal_weights.x)
+
+# Calculate Sharpe Ratio for the optimized portfolio
+optimal_sharpe_ratio = (optimal_portfolio_returns - risk_free_rate) / optimal_portfolio_volatility
+st.write(f'Expected Annual Return (Optimized): {optimal_portfolio_returns:.2%}')
+st.write(f'Annual Volatility (Optimized): {optimal_portfolio_volatility:.2%}')
+st.write(f'Sharpe Ratio (Optimized): {optimal_sharpe_ratio:.2f}')
+
+# Efficient Frontier plot with optimized portfolio
+st.subheader('Efficient Frontier with Optimized Portfolio')
+plt.figure(figsize=(10, 5))
+plt.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='plasma')
+plt.colorbar(label='Sharpe Ratio')
+plt.xlabel('Volatility')
+plt.ylabel('Return')
+plt.title('Efficient Frontier with Optimized Portfolio')
+plt.scatter(max_sr_vol, max_sr_ret, c='red', s=50, edgecolors='black', label='Maximum Sharpe Ratio')
+plt.scatter(optimal_portfolio_volatility, optimal_portfolio_returns, c='green', s=50, edgecolors='black',
+            label='Optimized Portfolio')
+plt.legend()
+st.pyplot()
+
+# Display optimal portfolio weights
+st.subheader('Optimized Portfolio Weights')
+for i, stock in enumerate(stocks):
+    st.write(f"{stock}: {optimal_weights.x[i]:.2%}")
 tickers = []
 for i in dataset[['AMAZON','MICROSOFT','FDX','Netflix']].columns:
     tickers.append(i)
