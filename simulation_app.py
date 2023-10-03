@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import git
 import os
+warnings.filterwarnings("ignore", message="Series.__getitem__", category=FutureWarning)
 # Specify the GitHub repository URL
 repo_url = "https://github.com/mohanteja7m/App.git"  # Replace with your GitHub repository URL
 
@@ -280,5 +281,5 @@ plt.scatter(max_sharpe_port[1],max_sharpe_port[0],marker=(5,1,0),color='r',s=500
 plt.scatter(min_vol_port[1] ,min_vol_port[0],marker=(5,1,0),color='g', s=500, label='Minimum Volatility Portfolio')
 plt.legend(labelspacing=0.8)
 st.pyplot(plt)
-min_vol_port.to_frame().T.squeeze() #portfolio with the Lowest variance portfolio
-max_sharpe_port.to_frame().T.squeeze()
+min_vol_port.to_frame().T #portfolio with the Lowest variance portfolio
+max_sharpe_port.to_frame().T
