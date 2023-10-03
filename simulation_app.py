@@ -95,21 +95,22 @@ rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 num_portfolios = st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1)
 
-# Optimize for maximum Sharpe Ratio
-sharpe_maximum = max_sharpe_ratio(log_return, rf_rate / 100)
-return_p, vol_p = portfolio_performance(sharpe_maximum['x'], log_return)
-
-# Optimize for minimum volatility
-min_volatility_result = min_volatility(log_return)
-return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
-
-# Display portfolio statistics and plot
-st.write(f"Maximum Sharpe Ratio: {sharpe_maximum['fun']:.2%}")
-st.write(f"Expected Annual Return: {return_p:.2%}")
-st.write(f"Annual Volatility: {vol_p:.2%}")
-
-st.write(f"Minimum Volatility Portfolio:{vol_min:.2%}")
-st.write(f"Expected Annual Return: {return_min:.2%}")
+Markowitz_log_ret = np.log(dataset / dataset.shift(1))
+# Calculate mean log returns as a NumPy array
+mean_log_returns = Markowitz_log_ret.mean().values
+# Calculate expected return (weighted sum of mean returns)
+Markowitz_exp_ret = mean_log_returns.dot(weights_array) * 252
+st.subheader(f'\nExpected return of the portfolio is : {Markowitz_exp_ret}')
+# Calculate expected volatility (risk)
+Markowitz_exp_vol = np.sqrt(weights_array.T.dot(252 * Markowitz_log_ret.cov().dot(weights_array)))
+st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
+# Calculate Sharpe ratio
+Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
+st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
+all_weights = np.zeros((num_portfolios, len(stocks)))
+ret_arr = np.zeros(num_portfolios)
+vol_arr = np.zeros(num_portfolios)
+sharpe_arr = np.zeros(num_portfolios)
 
 st.subheader("Efficient Frontier")
 target = np.linspace(return_min, 1.02, 100)
@@ -117,15 +118,42 @@ efficient_portfolios = [portfolio_performance(eff['x'], log_return) for eff in e
 
 efficient_returns = [eff[0] for eff in efficient_portfolios]
 efficient_volatilities = [eff[1] for eff in efficient_portfolios]
+for ind in range(num_portfolios):
+    # Generate random weights
+    weights = np.random.random(len(stocks))
+    weights /= np.sum(weights)
 
-fig, ax = plt.subplots()
-ax.scatter(efficient_volatilities, efficient_returns, c=target, cmap='plasma')
-ax.set_xlabel('Annualized Volatility')
-ax.set_ylabel('Annualized Return')
-ax.set_title('Efficient Frontier')
-ax.scatter(vol_p, return_p, c='r', marker='*', s=500, label='Maximum Sharpe Ratio')
-ax.scatter(vol_min, return_min, c='g', marker='*', s=500, label='Minimum Volatility Portfolio')
-ax.legend()
+    # Save the weights
+    all_weights[ind, :] = weights
+
+    # Expected Portfolio Return
+    ret_arr[ind] = np.sum((dataset.pct_change().mean() * weights) * 252)
+
+    # Expected Portfolio Volatility
+    vol_arr[ind] = np.sqrt(np.dot(weights.T, np.dot(dataset.pct_change().cov() * 252, weights)))
+
+    # Sharpe Ratio
+    sharpe_arr[ind] = ret_arr[ind] / vol_arr[ind]
+
+# Find portfolio with maximum Sharpe Ratio
+max_sr_ret = ret_arr[sharpe_arr.argmax()]
+max_sr_vol = vol_arr[sharpe_arr.argmax()]
+
+min_var_ret = ret_arr[vol_arr.argmin()]
+min_var_vol = vol_arr.min()
+
+# Plot Efficient Frontier
+st.subheader('Efficient Frontier')
+plt.figure(figsize=(10, 5))
+plt.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='plasma')
+plt.colorbar(label='Sharpe Ratio')
+plt.xlabel('Volatility')
+plt.ylabel('Return')
+plt.title('Efficient Frontier')
+plt.scatter(max_sr_vol, max_sr_ret, c='red', s=500, edgecolors='black', label='Maximum Sharpe Ratio')
+plt.scatter(min_var_vol, min_var_ret, c='green', s=500, edgecolors='black', label='Minimum Variance')
+plt.legend()
+st.pyplot()
 
 st.pyplot(fig)
 tickers = []
