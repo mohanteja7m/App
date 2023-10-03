@@ -104,7 +104,7 @@ min_volatility_result = min_volatility(log_return)
 return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
 
 # Display portfolio statistics and plot
-st.write(f"Maximum Sharpe Ratio: {sharpe_maximum:.2%}")
+st.write(f"Maximum Sharpe Ratio: {sharpe_maximum['fun']:.2%}")
 st.write(f"Expected Annual Return: {return_p:.2%}")
 st.write(f"Annual Volatility: {vol_p:.2%}")
 
