@@ -203,6 +203,7 @@ st.write(f'Expected Annual Return (Optimized): {optimal_portfolio_returns:.2%}')
 st.write(f'Annual Volatility (Optimized): {optimal_portfolio_volatility:.2%}')
 st.write(f'Sharpe Ratio (Optimized): {optimal_sharpe_ratio:.2f}')
 
+
 # Efficient Frontier plot with optimized portfolio
 st.subheader('Efficient Frontier with Optimized Portfolio')
 plt.figure(figsize=(10, 5))
