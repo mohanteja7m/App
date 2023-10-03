@@ -139,6 +139,8 @@ vol_arr = np.zeros(num_portfolios)
 sharpe_arr = np.zeros(num_portfolios)
 
 st.subheader("Efficient Frontier")
+min_volatility_result = min_volatility(log_return)
+return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
 target = np.linspace(return_min, 1.02, 100)
 efficient_portfolios = [portfolio_performance(eff['x'], log_return) for eff in efficient_frontier(target)]
 
