@@ -138,7 +138,7 @@ st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
 st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
-all_weights = np.zeros((num_ports, len(stocks)))
+all_weights = np.zeros((num_portfolios, len(stocks)))
 ret_arr = np.zeros(num_portfolios)
 vol_arr = np.zeros(num_portfolios)
 sharpe_arr = np.zeros(num_portfolios)
