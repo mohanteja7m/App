@@ -36,7 +36,7 @@ def portfolio_return(weight):
 
     return np.sum(mean_returns*weight)*252
 def negativeSR(weight):
-    return_p, vol_p = portfolio_performance(weight)
+    return_p, vol_p = portfolio_performance(weight,log_return)
     rf_rate         = 0.025
     return -(return_p - rf_rate)/vol_p
 
