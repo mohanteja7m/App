@@ -122,7 +122,6 @@ st.sidebar.write('**Portfolio Statistics**')
 st.sidebar.write(f'Expected Annual Return: {portfolio_returns:.2%}')
 st.sidebar.write(f'Annual Volatility: {portfolio_volatility:.2%}')
 st.sidebar.write(f'Sharpe Ratio: {sharpe_ratio:.2f}')
-log_return = log_returns(prices=dataset).dropna()
 weights_array /= np.sum(weights_array)
 
 
