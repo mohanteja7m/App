@@ -20,7 +20,7 @@ else:
 # Load the dataset from the cloned repository
 dataset_path = os.path.join(repo_dir, "dataset.csv")  # Replace with your dataset file name
 dataset = pd.read_csv(dataset_path)
-@st.cache 
+@st.cache  # 
 st.title("Simulation of Portfoilo Optimization")
 log_return = np.log(dataset / dataset.shift(1)).dropna()
 sigma            = log_return.cov()
