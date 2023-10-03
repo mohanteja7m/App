@@ -222,6 +222,10 @@ st.pyplot()
 st.subheader('Optimized Portfolio Weights')
 for i, stock in enumerate(stocks):
     st.write(f"{stock}: {optimal_weights.x[i]:.2%}")
+
+min_volatility_result = min_volatility(log_return)
+return_min, vol_min = portfolio_performance(min_volatility_result['x'], log_return)
+
 tickers = []
 for i in dataset[['AMAZON','MICROSOFT','FDX','Netflix']].columns:
     tickers.append(i)
