@@ -93,7 +93,7 @@ def efficient_frontier(return_range):
 # User inputs for risk-free rate and portfolio size
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
-num_portfolios = st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1)
+num_portfolios = int(st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1))
 st.sidebar.header('Portfolio Weights')
 stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
 weights = {}
@@ -138,7 +138,6 @@ st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
 # Calculate Sharpe ratio
 Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
 st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
-num_ports = 5000
 all_weights = np.zeros((num_ports, len(stocks)))
 ret_arr = np.zeros(num_portfolios)
 vol_arr = np.zeros(num_portfolios)
