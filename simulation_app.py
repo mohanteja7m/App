@@ -94,6 +94,10 @@ def efficient_frontier(return_range):
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 num_portfolios = st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1)
+stocks = ['AMAZON', 'MICROSOFT', 'FDX', 'Netflix']
+weights = {}
+weights[stock] = st.sidebar.slider(f"{stock} Weight", 0.0, 1.0, 0.25, 0.05)
+weights_array = np.array(list(weights.values()))
 
 Markowitz_log_ret = np.log(dataset / dataset.shift(1))
 # Calculate mean log returns as a NumPy array
