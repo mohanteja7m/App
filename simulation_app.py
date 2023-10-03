@@ -115,7 +115,7 @@ portfolio_vol = np.sqrt(np.dot(weights_array.T, np.dot(dataset.pct_change().cov(
 
 # Calculate Sharpe Ratio
 risk_free_rate = st.number_input("Enter the risk-free rate (as a decimal):", min_value=0.0, value=0.03, step=0.01)
-sharpe_ratio = (portfolio_returns - risk_free_rate) / portfolio_volatility
+sharpe_ratio = (portfolio_returns - risk_free_rate) / portfolio_vol
 
 # Display portfolio statistics
 st.sidebar.write('**Portfolio Statistics**')
