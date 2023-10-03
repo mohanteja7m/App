@@ -280,5 +280,7 @@ plt.scatter(max_sharpe_port[1],max_sharpe_port[0],marker=(5,1,0),color='r',s=500
 plt.scatter(min_vol_port[1] ,min_vol_port[0],marker=(5,1,0),color='g', s=500, label='Minimum Volatility Portfolio')
 plt.legend(labelspacing=0.8)
 st.pyplot(plt)
+st.subheader("Portfolio with Minimum Variance(Volatility)")
 min_vol_port.to_frame().T #portfolio with the Lowest variance portfolio
+st.subheader("Portfolio with Maximum Sharpe Ratio(Expected Return)")
 max_sharpe_port.to_frame().T
