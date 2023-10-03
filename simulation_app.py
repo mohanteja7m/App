@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import git
 import os
-warnings.filterwarnings("ignore", message="Series.__getitem__", category=FutureWarning)
 # Specify the GitHub repository URL
 repo_url = "https://github.com/mohanteja7m/App.git"  # Replace with your GitHub repository URL
 
