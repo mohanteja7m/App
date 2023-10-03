@@ -150,11 +150,11 @@ for ind in range(num_portfolios):
     sharpe_ratios[ind] = portfolio_returns[ind] / portfolio_volatilities[ind]
 
 # Find portfolio with maximum Sharpe Ratio
-max_sr_index = sharpe_ratios.argmax()
+max_sr_index = int(sharpe_ratios.argmax())
 max_sr_ret = portfolio_returns[max_sr_index]
 max_sr_vol = portfolio_volatilities[max_sr_index]
 
-min_vol_index = portfolio_volatilities.argmin()
+min_vol_index = int(portfolio_volatilities.argmin())
 min_vol_ret = portfolio_returns[min_vol_index]
 min_vol_vol = portfolio_volatilities[min_vol_index]
 
