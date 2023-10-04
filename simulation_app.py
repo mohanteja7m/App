@@ -37,26 +37,15 @@ def portfolio_performance(weight, log_return):
 def portfolio_return(weight):
 
     return np.sum(mean_returns*weight)*252
+
 def negativeSR(weight):
     return_p, vol_p = portfolio_performance(weight,log_return)
     rf_rate         = 0.025
     return -(return_p - rf_rate)/vol_p
 
-# Function to optimize for maximum Sharpe Ratio
-def max_sharpe_ratio(log_return, rf_rate=0.025):
-    def negative_SR(weight):
-        return_p, vol_p = portfolio_performance(weight, log_return)
-        return -(return_p - rf_rate) / vol_p
-
-    n_assets = log_return.shape[1]
-    weight_constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
-    w0 = np.random.dirichlet(np.full(n_assets, 0.05)).tolist()
-
-    return minimize(negative_SR, w0, method='SLSQP',
-                    bounds=((0, 1),) * n_assets,
-                    constraints=weight_constraints)
 def portfolio_volatility(weight):
     return np.sqrt(np.dot(weight.T, np.dot(sigma,weight)))*np.sqrt(252)
+
 
 # Function to optimize for minimum volatility
 def min_volatility(log_return):
@@ -80,19 +69,6 @@ def min_vol():
     return minimize(portfolio_volatility,w0,method='SLSQP',
                    bounds      = bounds,
                    constraints = weight_constraints)
-def efficient_portfolio_target(target):
-
-    constraints = ({'type':'eq','fun': lambda x: portfolio_return(x)- target},
-                  {'type' :'eq','fun': lambda x: np.sum(x)-1})
-    w0          = np.random.dirichlet(np.full(n_assets,0.05)).tolist()
-    bounds      = ((0,1),)*n_assets
-
-    return minimize(portfolio_volatility,w0, method = 'SLSQP',
-                    bounds      = bounds,
-                    constraints = constraints)
-def efficient_frontier(return_range):
-    return [efficient_portfolio_target(ret) for ret in return_range]
-
 
 # User inputs for risk-free rate and portfolio size
 rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
