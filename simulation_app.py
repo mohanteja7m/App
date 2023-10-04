@@ -201,7 +201,7 @@ optimal_portfolio_returns = portfolio_return(optimal_weights.x)
 optimal_portfolio_volatility = portfolio_volatility(optimal_weights.x)
  
 # Calculate Sharpe Ratio for the optimized portfolio
-optimal_sharpe_ratio = (optimal_portfolio_returns - risk_free_rate) / optimal_portfolio_volatility
+optimal_sharpe_ratio = (optimal_portfolio_returns - rf_rate) / optimal_portfolio_volatility
 st.write(f'Expected Annual Return (Optimized): {optimal_portfolio_returns:.2%}')
 st.write(f'Annual Volatility (Optimized): {optimal_portfolio_volatility:.2%}')
 st.write(f'Sharpe Ratio (Optimized): {optimal_sharpe_ratio:.2f}')
