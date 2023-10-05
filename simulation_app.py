@@ -72,7 +72,6 @@ def min_vol():
 
 # User inputs for risk-free rate and portfolio size
 rf_rate = st.number_input("Enter the risk-free rate (as a decimal):", min_value=0.0, max_value=1.0, step=0.01)
-
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 num_portfolios = int(st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1))
 st.sidebar.header('Portfolio Weights')
@@ -103,21 +102,6 @@ st.sidebar.write(f'Annual Volatility: {portfolio_vol:.2%}')
 st.sidebar.write(f'Sharpe Ratio: {sharpe_ratio:.2f}')
 weights_array /= np.sum(weights_array)
 
- 
-# We generally do log return instead of return
-Markowitz_log_ret = np.log(dataset / dataset.shift(1))
-# Calculate mean log returns as a NumPy array
-mean_log_returns = Markowitz_log_ret.mean().values
-# Calculate expected return (weighted sum of mean returns)
-Markowitz_exp_ret = mean_log_returns.dot(weights_array) * 252
-st.subheader(f'\nExpected return of the portfolio is : {Markowitz_exp_ret}')
-# Calculate expected volatility (risk)
-Markowitz_exp_vol = np.sqrt(weights_array.T.dot(252 * Markowitz_log_ret.cov().dot(weights_array)))
-st.subheader(f'\nExpected Volatility of the portfolio is : {Markowitz_exp_vol}')
- 
-# Calculate Sharpe ratio
-Markowitz_sr = Markowitz_exp_ret / Markowitz_exp_vol
-st.subheader(f'\nSharpe Ratio of the portfolio is : {Markowitz_sr}')
 all_weights = np.zeros((num_portfolios, len(stocks)))
 ret_arr = np.zeros(num_portfolios)
 vol_arr = np.zeros(num_portfolios)
