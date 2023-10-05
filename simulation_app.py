@@ -71,7 +71,8 @@ def min_vol():
                    constraints = weight_constraints)
 
 # User inputs for risk-free rate and portfolio size
-rf_rate = st.slider("Risk-Free Rate (%)", 0.0, 5.0, 2.5, 0.1)
+rf_rate = st.number_input("Enter the risk-free rate (as a decimal):", min_value=0.0, max_value=1.0, step=0.01)
+
 portfolio = st.slider("Portfolio Size", 10, 100, 50, 5)
 num_portfolios = int(st.number_input("Number of Portfolios to Simulate", min_value=1, value=10000, step=1))
 st.sidebar.header('Portfolio Weights')
